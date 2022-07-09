@@ -1,5 +1,7 @@
 // import { Terminal } from 'xterm'
 import Link from 'next/link'
+import React from 'react'
+import { Heading } from '@chakra-ui/react'
 
 export default function FirstPost() {
   // const term = new Terminal()
@@ -9,6 +11,7 @@ export default function FirstPost() {
     <>
       <h1>First Post</h1>
       <h2>
+        <Heading color="red">Hello, Next.js with Chakra UI</Heading>
         <Link href="/">
           <a>Back to home</a>
         </Link>
