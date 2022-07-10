@@ -1,36 +1,33 @@
-// import { Terminal } from 'xterm'
+import React, { useEffect, useRef } from 'react'
 import Link from 'next/link'
-import React, { useEffect, useState } from 'react'
 import { Heading } from '@chakra-ui/react'
-import Btn from './_btn'
+
+import { XTerm } from 'xterm-for-react'
+// import Btn from './_btn'
 
 export default function FirstPost() {
   console.log('inicialize')
-  const [user, setUser] = useState('firstName')
-  // const term = new Terminal()
-  // term.open(document.getElementById('terminal') as HTMLElement)
-  // term.write('Hello from \x1B[1;3;31mxterm.js\x1B[0m $ ')
+  //   const [term] = useState(new Terminal())
+  const xtermRef = useRef(null)
+  const inputElement = useRef(null)
+
   useEffect(() => {
-    console.log('mount')
-    return () => {
-      console.log('unmount')
-      setUser('secondName')
-    }
+    // You can call any method in XTerm.js by using 'xterm xtermRef.current.terminal.[What you want to call]
+    xtermRef.current.terminal.writeln('Hello, World!')
   }, [])
 
   return (
     <>
-      {console.log(user)}
-      <Heading color="red">Hello,{user} Next.js with Chakra UI</Heading>
+      <Heading color="red">Hello, Next.js with Chakra UI</Heading>
       <h1>First Post</h1>
       <h2>
         <Link href="/">
           <a>Back to home</a>
         </Link>
       </h2>
-      <div>
-        <Btn user={user}></Btn>
-      </div>
+      <XTerm ref={xtermRef} />
+      <input ref={inputElement} type="text" />
+      {console.log(inputElement.current)}
     </>
   )
 }
