@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { Terminal } from 'xterm'
+import 'xterm/css/xterm.css'
 // import { FitAddon } from 'xterm-addon-fit'
 // import { WebLinksAddon } from 'xterm-addon-web-links'
 
