@@ -1,15 +1,27 @@
-import { useEffect, useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Terminal } from 'xterm'
+// import { Box, Button, Text } from '@chakra-ui/react'
 import 'xterm/css/xterm.css'
+
 // import { FitAddon } from 'xterm-addon-fit'
 // import { WebLinksAddon } from 'xterm-addon-web-links'
 
 export default function Xterm() {
   const xtermRef = useRef<Terminal>(null!)
   //   const [fitAddon] = useState(new FitAddon())
+  //   const [ws, setWs] = useState<WebSocket | null>(null)
+  //   const [count, setCount] = useState(0)
+
+  useEffect(() => {
+    console.log('mount')
+    return () => {
+      console.log('unmount')
+    }
+  }, [])
 
   useEffect(() => {
     if (xtermRef == null) {
+      //ws == null) {
       return
     }
     console.log('inicialize xterm')
@@ -35,8 +47,10 @@ export default function Xterm() {
         const char = key.domEvent.key
         if (char === 'Enter' && cmd.length > 0) {
           switch (
-            (console.log(cmd), cmd)
+            ((console.log(cmd), cmd),
             //your cmd logic
+            cmd)
+            // ws?.send(char)
           ) {
           }
           //   xtermRef.current.write(cmd)
