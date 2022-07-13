@@ -1,7 +1,8 @@
-import { fetchData1, Loadable } from '@/features/loadable'
+import React, { Suspense, useState } from 'react'
+import { Loadable } from '@/features/loadable'
 import DataLoader from '@/parts/dataLoader'
 import { Box } from '@chakra-ui/layout'
-import React, { Suspense, useState } from 'react'
+import { fetchData1 } from '../api/fetchData'
 
 export default function Suspence() {
   const [data1] = useState(() => new Loadable(fetchData1()))
