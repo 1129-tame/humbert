@@ -1,7 +1,7 @@
 import Xterm from '@/features/xterm'
 import { Box, Text } from '@chakra-ui/react'
 import type { NextPage } from 'next'
-import React from 'react'
+import React, { Suspense } from 'react'
 
 const Home: NextPage = () => {
   return (
@@ -15,7 +15,9 @@ const Home: NextPage = () => {
         </Text>
       </Box>
       <Box maxW="960px" mx="auto">
-        <Xterm />
+        <Suspense fallback={<Text color="whatsapp.100">Loading...</Text>}>
+          <Xterm />
+        </Suspense>
       </Box>
     </>
   )
