@@ -25,7 +25,8 @@ export default function WebSocketComponent() {
       setIsConnected(false)
     }
 
-    ws.onmessage = function () {
+    ws.onmessage = function (event) {
+      console.log(event.data)
       return setLastPong(new Date().toISOString())
     }
 
