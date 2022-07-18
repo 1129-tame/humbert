@@ -1,38 +1,63 @@
-import React, { useEffect, useRef } from 'react'
+import { Button } from '@chakra-ui/button'
+import { Box, Text } from '@chakra-ui/layout'
+import React, { useEffect, useRef, useState } from 'react'
 import { Terminal } from 'xterm'
 // import { Box, Button, Text } from '@chakra-ui/react'
 import 'xterm/css/xterm.css'
-// import WebSocket from 'ws'
-import io, { Socket } from 'socket.io-client'
 
-// import { FitAddon } from 'xterm-addon-fit'
-// import { WebLinksAddon } from 'xterm-addon-web-links'
-// const connection = new WebSocket('wss://echo.websocket.org')
-const socket = io('ws://localhost:8080')
+export const isBrowser = typeof window !== 'undefined'
+export const ws = isBrowser
+  ? new WebSocket('ws://localhost:8080/socket.io')
+  : null
 export default function Xterm() {
   const xtermRef = useRef<Terminal>(null!)
+  const [isConnected, setIsConnected] = useState(false)
+  const [lastPong, setLastPong] = useState<string>('')
 
-  // client-side
-  socket.on('connect', () => {
-    console.log(socket.id) // x8WIv7-mJelg7on_ALbx
-  })
-
-  //   socket.on("connect", () => {
-  //     console.log(socket.id) // "G5p5..."
-  //   })
-  const socketRef = useRef<Socket>()
+  const socketRef = useRef(ws)
 
   useEffect(() => {
-    console.log('Connectinng..')
-    socketRef.current = io('ws://localhost:8080')
-    socketRef.current.on('broadcast', (payload) => {
-      console.log('Recieved: ' + payload)
-    })
+    if (socketRef.current == null) {
+      return
+    }
+    console.log(socketRef.current)
+    socketRef.current.onopen = function () {
+      setIsConnected(true)
+      console.log('Connected')
+    }
+
+    socketRef.current.onclose = function () {
+      console.log('closed')
+      setIsConnected(false)
+    }
+
+    socketRef.current.onmessage = function (event) {
+      xtermRef.current?.write(event.data + '\r\n$ ')
+      console.log(event.data)
+      return setLastPong(new Date().toISOString())
+    }
+
+    // setInterval(function () {
+    //   ws.send('Hello, Server!')
+    // }, 3000)
+
     return () => {
-      console.log('Disconnecting..')
-      socketRef.current?.disconnect()
+      if (socketRef.current == null) {
+        return
+      }
+      socketRef.current.close()
     }
   }, [])
+
+  const sendPing = () => {
+    socketRef.current?.close()
+  }
+  const reconnect = () => {
+    console.log(socketRef.current)
+    console.log(ws)
+    socketRef.current = ws
+    console.log(socketRef.current)
+  }
 
   useEffect(() => {
     console.log('mount')
@@ -52,26 +77,10 @@ export default function Xterm() {
       const { WebLinksAddon } = await import('xterm-addon-web-links')
       //   const { AttachAddon } = await import('xterm-addon-attach')
       const fitAddon = new FitAddon()
-      //   const socket = new WebSocket('ws://{addr}:{port}/ws')
       //   const attachAddon = new AttachAddon(socket)
       xtermRef.current = new Terminal({
         cursorBlink: true,
       })
-      console.log(socket)
-      if (socket != null) {
-        // socket.send('sample')
-        console.log('true')
-        //     socket.connect = () => {
-        //       console.log('connected')
-        //       socket.send('sample')
-        //     }
-      }
-      //メッセージを受け取った場合
-      //   socket.addEventListener('message', (response) => {
-      //     console.log('accept message')
-      //     xtermRef.current.write('$ ' + response.data + '\r\n')
-      //     xtermRef.current.write('$ ')
-      //   })
       xtermRef.current.loadAddon(fitAddon)
       xtermRef.current.loadAddon(new WebLinksAddon())
       xtermRef.current.open(document.getElementById('terminal') as HTMLElement)
@@ -86,25 +95,11 @@ export default function Xterm() {
         const char = key.domEvent.key
         if (char === 'Enter' && cmd.length > 0) {
           switch (
-            (((console.log(cmd), cmd),
+            (console.log(cmd),
             //your cmd logic
-            cmd),
-            // ws?.send(char)
-            socket.send(
-              JSON.stringify({
-                message: cmd,
-              }),
-            ))
-            // (socket.onopen = () => {
-            //   console.log('use connect')
-            //   socket.send(
-            //     JSON.stringify({
-            //       message: cmd,
-            //     }),
-            //   )
+            socketRef.current?.send(cmd))
           ) {
           }
-          //   xtermRef.current.write(cmd)
           xtermRef.current.write('\r\n')
           xtermRef.current.write('$ ')
           cmd = ''
@@ -121,13 +116,24 @@ export default function Xterm() {
     }
     const xterm = initTerminal()
     return () => {
-      // xterm.then(console.log)
-      // xtermRef.current.dispose()
       xterm.then((x) => x.current.dispose())
     }
   }, [])
+
   return (
-    <div id="terminal" className="" />
+    <>
+      <Box boxShadow="xs" my={10} w="100%" h="50px" bg="indigo">
+        <Text color="whatsapp.100" fontSize="1em" textAlign="center">
+          Connected: {'' + isConnected}
+        </Text>
+        <Text color="green.200" fontSize="1em" textAlign="center">
+          Last pong: {lastPong || '-'}
+        </Text>
+      </Box>
+      <Button onClick={sendPing}>close</Button>
+      <Button onClick={reconnect}>reconnect</Button>
+      <div id="terminal" className="" />
+    </>
     //your code
   )
 }

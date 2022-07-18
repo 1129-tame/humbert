@@ -12,10 +12,8 @@ import (
 
 func handleWebSocket(c echo.Context) error {
 	log.Println("Serving at localhost:8000...")
-	log.Println(c)
 	websocket.Handler(func(ws *websocket.Conn) {
 		defer ws.Close()
-		log.Println(ws)
 
 		// 初回のメッセージを送信
 		err := websocket.Message.Send(ws, "Server: Hello, Client!")
@@ -26,13 +24,20 @@ func handleWebSocket(c echo.Context) error {
 		for {
 			// Client からのメッセージを読み込む
 			msg := ""
-			err = websocket.Message.Receive(ws, &msg)
+			err := websocket.Message.Receive(ws, &msg)
+			log.Println(err)
 			if err != nil {
+				if err.Error() == "EOF" {
+					log.Println(fmt.Errorf("read %s", err))
+					// break をぬける
+					break
+				}
+				log.Println(fmt.Errorf("read %s", err))
 				c.Logger().Error(err)
 			}
 
 			// Client からのメッセージを元に返すメッセージを作成し送信する
-			err := websocket.Message.Send(ws, fmt.Sprintf("Server: \"%s\" received!", msg))
+			err = websocket.Message.Send(ws, fmt.Sprintf("Server: \"%s\" received!", msg))
 			if err != nil {
 				c.Logger().Error(err)
 			}
@@ -44,12 +49,6 @@ func handleWebSocket(c echo.Context) error {
 func main() {
 	e := echo.New()
 	e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
-	// CORS restricted
-	// Allows requests from any `https://labstack.com` or `https://labstack.net` origin
-	// wth GET, PUT, POST or DELETE method.
-	// CORSの設定追加
-	// e.Use(middleware.CORS())
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		Skipper:          middleware.DefaultSkipper,
 		AllowOrigins:     []string{"http://localhost:3000", "ws://localhost:3000"},
