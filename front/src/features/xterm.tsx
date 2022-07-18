@@ -3,7 +3,7 @@ import { Terminal } from 'xterm'
 // import { Box, Button, Text } from '@chakra-ui/react'
 import 'xterm/css/xterm.css'
 // import WebSocket from 'ws'
-import io from 'socket.io-client'
+import io, { Socket } from 'socket.io-client'
 
 // import { FitAddon } from 'xterm-addon-fit'
 // import { WebLinksAddon } from 'xterm-addon-web-links'
@@ -12,9 +12,27 @@ const socket = io('ws://localhost:8080')
 export default function Xterm() {
   const xtermRef = useRef<Terminal>(null!)
 
+  // client-side
+  socket.on('connect', () => {
+    console.log(socket.id) // x8WIv7-mJelg7on_ALbx
+  })
+
   //   socket.on("connect", () => {
   //     console.log(socket.id) // "G5p5..."
   //   })
+  const socketRef = useRef<Socket>()
+
+  useEffect(() => {
+    console.log('Connectinng..')
+    socketRef.current = io('ws://localhost:8080')
+    socketRef.current.on('broadcast', (payload) => {
+      console.log('Recieved: ' + payload)
+    })
+    return () => {
+      console.log('Disconnecting..')
+      socketRef.current?.disconnect()
+    }
+  }, [])
 
   useEffect(() => {
     console.log('mount')

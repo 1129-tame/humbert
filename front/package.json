@@ -57,5 +57,6 @@
       "yarn format",
       "yarn lint:fix"
     ]
-  }
+  },
+  "proxy": "http://localhost:8080"
 }
