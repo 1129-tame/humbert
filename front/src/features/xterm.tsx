@@ -2,7 +2,6 @@ import { Button } from '@chakra-ui/button'
 import { Box, Text } from '@chakra-ui/layout'
 import React, { useEffect, useRef, useState } from 'react'
 import { Terminal } from 'xterm'
-// import { Box, Button, Text } from '@chakra-ui/react'
 import 'xterm/css/xterm.css'
 
 export const isBrowser = typeof window !== 'undefined'
@@ -32,14 +31,10 @@ export default function Xterm() {
     }
 
     socketRef.current.onmessage = function (event) {
-      xtermRef.current?.write(event.data + '\r\n$ ')
+      xtermRef.current?.write(event.data)
       console.log(event.data)
       return setLastPong(new Date().toISOString())
     }
-
-    // setInterval(function () {
-    //   ws.send('Hello, Server!')
-    // }, 3000)
 
     return () => {
       if (socketRef.current == null) {
@@ -52,11 +47,11 @@ export default function Xterm() {
   const sendPing = () => {
     socketRef.current?.close()
   }
+
+  // TODO: 再接続機能
   const reconnect = () => {
-    console.log(socketRef.current)
     console.log(ws)
     socketRef.current = ws
-    console.log(socketRef.current)
   }
 
   useEffect(() => {
@@ -86,9 +81,6 @@ export default function Xterm() {
       xtermRef.current.open(document.getElementById('terminal') as HTMLElement)
       fitAddon.fit()
 
-      const shellprompt = '$ '
-      xtermRef.current.write('\r\n' + shellprompt)
-
       let cmd = ''
 
       xtermRef.current.onKey((key) => {
@@ -96,7 +88,7 @@ export default function Xterm() {
         if (char === 'Enter' && cmd.length > 0) {
           switch (
             (console.log(cmd),
-            //your cmd logic
+            // send command
             socketRef.current?.send(cmd))
           ) {
           }
@@ -111,7 +103,6 @@ export default function Xterm() {
           cmd += char
         }
       })
-      // Add logic
       return xtermRef
     }
     const xterm = initTerminal()
