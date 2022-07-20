@@ -1,5 +1,11 @@
+import {
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
+} from '@chakra-ui/alert'
 import { Button } from '@chakra-ui/button'
-import { Box, Text } from '@chakra-ui/layout'
+import { Box } from '@chakra-ui/layout'
 import React, { useEffect, useRef, useState } from 'react'
 import { Terminal } from 'xterm'
 import 'xterm/css/xterm.css'
@@ -11,7 +17,6 @@ export const ws = isBrowser
 export default function Xterm() {
   const xtermRef = useRef<Terminal>(null!)
   const [isConnected, setIsConnected] = useState(false)
-  const [lastPong, setLastPong] = useState<string>('')
 
   const socketRef = useRef(ws)
 
@@ -33,7 +38,6 @@ export default function Xterm() {
     socketRef.current.onmessage = function (event) {
       xtermRef.current?.write(event.data)
       console.log(event.data)
-      return setLastPong(new Date().toISOString())
     }
 
     return () => {
@@ -113,17 +117,39 @@ export default function Xterm() {
 
   return (
     <>
-      <Box boxShadow="xs" my={10} w="100%" h="50px" bg="indigo">
-        <Text color="whatsapp.100" fontSize="1em" textAlign="center">
-          Connected: {'' + isConnected}
-        </Text>
-        <Text color="green.200" fontSize="1em" textAlign="center">
-          Last pong: {lastPong || '-'}
-        </Text>
+      {!isConnected && (
+        <Alert status="error">
+          <AlertIcon />
+          <AlertTitle>通信が切断されました</AlertTitle>
+          <AlertDescription>リロードして再接続してください</AlertDescription>
+        </Alert>
+      )}
+      {/* <Button onClick={reconnect}>reconnect</Button>
+      <Button onClick={sendPing}>close</Button> */}
+      <Box id="terminal" className="" />
+      <Box
+        display="flex"
+        gap={6}
+        alignItems="center"
+        justifyContent="center"
+        rounded="full"
+        my={20}
+        bg={'linkedin.800'}
+        height={150}
+      >
+        <Button shadow="md" rounded="full" onClick={reconnect}>
+          ブランチを切る
+        </Button>
+        <Button shadow="md" rounded="full" onClick={reconnect}>
+          アド
+        </Button>
+        <Button shadow="md" rounded="full" onClick={sendPing}>
+          コミット
+        </Button>
+        <Button shadow="md" rounded="full" onClick={sendPing}>
+          プッシュ
+        </Button>
       </Box>
-      <Button onClick={sendPing}>close</Button>
-      <Button onClick={reconnect}>reconnect</Button>
-      <div id="terminal" className="" />
     </>
     //your code
   )
