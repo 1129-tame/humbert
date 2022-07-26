@@ -5,7 +5,7 @@ import {
   AlertDescription,
 } from '@chakra-ui/alert'
 import { Button } from '@chakra-ui/button'
-import { Box } from '@chakra-ui/layout'
+import { Box, List, ListIcon, ListItem } from '@chakra-ui/layout'
 import React, { useEffect, useRef, useState } from 'react'
 import { Terminal } from 'xterm'
 import 'xterm/css/xterm.css'
@@ -17,6 +17,8 @@ export const ws = isBrowser
 export default function Xterm() {
   const xtermRef = useRef<Terminal>(null!)
   const [isConnected, setIsConnected] = useState(false)
+  const [isBranched, setIsBranched] = useState(false)
+  const [branch, setBranch] = useState<string[]>([])
 
   const socketRef = useRef(ws)
 
@@ -28,6 +30,8 @@ export default function Xterm() {
     socketRef.current.onopen = function () {
       setIsConnected(true)
       console.log('Connected')
+      socketRef.current?.send('git branch\n')
+      setIsBranched(true)
     }
 
     socketRef.current.onclose = function () {
@@ -36,8 +40,20 @@ export default function Xterm() {
     }
 
     socketRef.current.onmessage = function (event) {
+      if (event.data === 'git branch\r\n\r\n') {
+        return
+      }
+      if (!event.data.indexOf('  ')) {
+        console.log('match')
+        console.log(event.data)
+        const array = event.data.split('\x1B[m\x1B[m\r\n')
+        console.log(array)
+        setBranch(array)
+      }
+      if (!isBranched) {
+        console.log(event)
+      }
       xtermRef.current?.write(event.data)
-      console.log(event.data)
     }
 
     return () => {
@@ -58,12 +74,9 @@ export default function Xterm() {
     socketRef.current = ws
   }
 
-  useEffect(() => {
-    console.log('mount')
-    return () => {
-      console.log('unmount')
-    }
-  }, [])
+  // useEffect(() => {
+  //   xtermRef.current?.write('git branch\n')
+  // }, [])
 
   useEffect(() => {
     if (xtermRef == null) {
@@ -127,27 +140,39 @@ export default function Xterm() {
       {/* <Button onClick={reconnect}>reconnect</Button>
       <Button onClick={sendPing}>close</Button> */}
       <Box id="terminal" className="" />
+      <Box color="whatsapp.100">
+        <List spacing={3}>
+          {branch.map((b) => {
+            return (
+              <ListItem key={b} color="gray.100">
+                <ListIcon />
+                {b}
+              </ListItem>
+            )
+          })}
+        </List>
+      </Box>
       <Box
         display="flex"
         gap={6}
         alignItems="center"
         justifyContent="center"
         rounded="full"
-        my={20}
+        my={10}
         bg={'linkedin.800'}
         height={150}
       >
-        <Button shadow="md" rounded="full" onClick={reconnect}>
+        <Button variant="solid" shadow="md" rounded="full" onClick={reconnect}>
           ブランチを切る
         </Button>
         <Button shadow="md" rounded="full" onClick={reconnect}>
-          アド
+          ステージングに追加する
         </Button>
         <Button shadow="md" rounded="full" onClick={sendPing}>
-          コミット
+          ローカルブランチにセーブする
         </Button>
         <Button shadow="md" rounded="full" onClick={sendPing}>
-          プッシュ
+          リモードブランチにセーブする
         </Button>
       </Box>
     </>

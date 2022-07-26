@@ -22,10 +22,10 @@ func handleWebSocket(c echo.Context) error {
 		defer ws.Close()
 
 		// 初回のメッセージを送信
-		err := websocket.Message.Send(ws, "ターミナルと接続しました。\r\n")
-		if err != nil {
-			c.Logger().Error(err)
-		}
+		// err := websocket.Message.Send(ws, "ターミナルと接続しました。\r\n")
+		// if err != nil {
+		// 	c.Logger().Error(err)
+		// }
 		// Create arbitrary command.
 		f := exec.Command("bash")
 

@@ -14,7 +14,7 @@ const Home: NextPage = () => {
           Terminal on browser
         </Text>
       </Box>
-      <Box maxW="960px" mx="auto" h={150}>
+      <Box maxW="960px" mx="auto">
         <Suspense fallback={<Text color="whatsapp.100">Loading...</Text>}>
           <Xterm />
         </Suspense>
