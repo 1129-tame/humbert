@@ -11,15 +11,16 @@ import { Terminal } from 'xterm'
 import 'xterm/css/xterm.css'
 
 export const isBrowser = typeof window !== 'undefined'
-export const ws = isBrowser
-  ? new WebSocket('ws://localhost:8080/socket.io')
-  : null
+// export const ws = isBrowser
+//   ? new WebSocket('ws://localhost:8080/socket.io')
+//   : null
 export default function Xterm() {
   const xtermRef = useRef<Terminal>(null!)
   const [isConnected, setIsConnected] = useState(false)
   const [isBranched, setIsBranched] = useState(false)
   const [branch, setBranch] = useState<string[]>([])
 
+  const ws = isBrowser ? new WebSocket('ws://localhost:8080/socket.io') : null
   const socketRef = useRef(ws)
 
   useEffect(() => {
@@ -43,6 +44,7 @@ export default function Xterm() {
       if (event.data === 'git branch\r\n\r\n') {
         return
       }
+
       if (!event.data.indexOf('  ')) {
         console.log('match')
         console.log(event.data)
@@ -176,6 +178,5 @@ export default function Xterm() {
         </Button>
       </Box>
     </>
-    //your code
   )
 }
