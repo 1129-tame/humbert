@@ -72,7 +72,7 @@ export default function Footer() {
         <Logo />
         <Text>© 2022 Chakra Templates. All rights reserved</Text>
         <Stack direction={'row'} spacing={6}>
-          <SocialButton label={'Twitter'} href={'#'}></SocialButton>
+          {/* <SocialButton label={'Twitter'} href={'#'}></SocialButton> */}
           <SocialButton label={'YouTube'} href={'#'}>
             {/* <FaYoutube /> */}
           </SocialButton>
