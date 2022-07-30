@@ -1,4 +1,5 @@
 import Xterm from '@/features/xterm'
+import Footer from '@/parts/footer'
 import Header from '@/parts/header'
 import { Box, Text } from '@chakra-ui/react'
 import React, { ReactElement, Suspense } from 'react'
@@ -21,6 +22,7 @@ Home.getLayout = function getLayout(page: ReactElement) {
     <>
       <Header />
       {page}
+      <Footer />
     </>
   )
 }
