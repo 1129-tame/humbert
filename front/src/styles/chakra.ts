@@ -8,7 +8,7 @@ export const styles = extendTheme({
       body: {
         // fontFamily: 'body',
         // color: mode('gray.800', 'whiteAlpha.900')(props),
-        bg: 'gray.800',
+        // bg: 'gray.800',
         // lineHeight: 'base',
       },
       // '*::placeholder': {
