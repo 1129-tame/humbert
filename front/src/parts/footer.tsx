@@ -10,7 +10,9 @@ import {
 //   import { FaInstagram, FaTwitter, FaYoutube } from 'react-icons/fa'
 import React, { ReactNode } from 'react'
 
-const Logo = (props: unknown) => {
+const Logo = (
+  props: JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>,
+) => {
   return (
     <svg
       height={32}
