@@ -1,11 +1,12 @@
+import Card from '@/parts/card'
 import {
   Alert,
   AlertIcon,
   AlertTitle,
   AlertDescription,
 } from '@chakra-ui/alert'
-import { Button } from '@chakra-ui/button'
-import { Box, List, ListIcon, ListItem } from '@chakra-ui/layout'
+import { Box } from '@chakra-ui/layout'
+import { Grid } from '@chakra-ui/react'
 import React, { useEffect, useRef, useState } from 'react'
 import { Terminal } from 'xterm'
 import 'xterm/css/xterm.css'
@@ -66,15 +67,15 @@ export default function Xterm() {
     }
   }, [])
 
-  const sendPing = () => {
-    socketRef.current?.close()
-  }
+  // const sendPing = () => {
+  //   socketRef.current?.close()
+  // }
 
   // TODO: 再接続機能
-  const reconnect = () => {
-    console.log(ws)
-    socketRef.current = ws
-  }
+  // const reconnect = () => {
+  //   console.log(ws)
+  //   socketRef.current = ws
+  // }
 
   // useEffect(() => {
   //   xtermRef.current?.write('git branch\n')
@@ -139,43 +140,13 @@ export default function Xterm() {
           <AlertDescription>リロードして再接続してください</AlertDescription>
         </Alert>
       )}
-      {/* <Button onClick={reconnect}>reconnect</Button>
-      <Button onClick={sendPing}>close</Button> */}
       <Box id="terminal" className="" />
       <Box color="whatsapp.100">
-        <List spacing={3}>
+        <Grid templateColumns="repeat(3, 1fr)" gap={6}>
           {branch.map((b) => {
-            return (
-              <ListItem key={b} color="gray.100">
-                <ListIcon />
-                {b}
-              </ListItem>
-            )
+            return <Card title={b} key={b}></Card>
           })}
-        </List>
-      </Box>
-      <Box
-        display="flex"
-        gap={6}
-        alignItems="center"
-        justifyContent="center"
-        rounded="full"
-        my={10}
-        bg={'linkedin.800'}
-        height={150}
-      >
-        <Button variant="solid" shadow="md" rounded="full" onClick={reconnect}>
-          ブランチを切る
-        </Button>
-        <Button shadow="md" rounded="full" onClick={reconnect}>
-          ステージングに追加する
-        </Button>
-        <Button shadow="md" rounded="full" onClick={sendPing}>
-          ローカルブランチにセーブする
-        </Button>
-        <Button shadow="md" rounded="full" onClick={sendPing}>
-          リモードブランチにセーブする
-        </Button>
+        </Grid>
       </Box>
     </>
   )

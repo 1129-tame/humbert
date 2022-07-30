@@ -7,7 +7,7 @@ import {
   Stack,
 } from '@chakra-ui/react'
 
-export default function Card() {
+export default function Card(props: { title: string }) {
   return (
     <Center py={12}>
       <Box
@@ -26,7 +26,7 @@ export default function Card() {
             Branch
           </Text>
           <Heading fontSize={'2xl'} fontFamily={'body'} fontWeight={500}>
-            Main
+            {props.title}
           </Heading>
           <Stack direction={'row'} align={'center'}>
             <Text fontWeight={800} fontSize={'xl'}>
