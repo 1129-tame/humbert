@@ -15,8 +15,15 @@ import {
   useDisclosure,
   useColorModeValue,
   Stack,
+  useColorMode,
 } from '@chakra-ui/react'
-import { HamburgerIcon, CloseIcon, AddIcon } from '@chakra-ui/icons'
+import {
+  HamburgerIcon,
+  CloseIcon,
+  AddIcon,
+  MoonIcon,
+  SunIcon,
+} from '@chakra-ui/icons'
 
 const Links = ['Home', 'ブランチ', 'お問合せ']
 
@@ -36,6 +43,7 @@ const NavLink = ({ children }: { children: ReactNode }) => (
 )
 
 export default function Header() {
+  const { colorMode, toggleColorMode } = useColorMode()
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   return (
@@ -70,6 +78,9 @@ export default function Header() {
               leftIcon={<AddIcon />}
             >
               コンソールを開く
+            </Button>
+            <Button onClick={toggleColorMode}>
+              {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
             </Button>
             <Menu>
               <MenuButton
