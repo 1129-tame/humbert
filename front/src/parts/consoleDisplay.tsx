@@ -8,9 +8,12 @@ export const isBrowser = typeof window !== 'undefined'
 
 export default function ConsoleDisplay() {
   const send = (cmd: string) => {
+    // TODO: send 次の処理を追記
+    // socketRef.current?.send(cmd))
     console.log(cmd)
   }
   const [terminalWrite] = useXterm('terminal', send)
+
   const onOpen = () => {
     console.log('open')
   }
@@ -30,6 +33,10 @@ export default function ConsoleDisplay() {
       // const array = event.data.split('\x1B[m\x1B[m\r\n')
       // console.log(array)
       // setBranch(array)
+    }
+
+    if (!terminalWrite) {
+      return
     }
     // if (!isBranched) {
     //   console.log(event)

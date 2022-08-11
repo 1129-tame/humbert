@@ -7,7 +7,7 @@ export const useWebSocket = (
   socketInicializeCmd: string,
   socketOpenHandler: () => void,
   socketCloseHandler: () => void,
-  socketMessageHandler: (e: MessageEvent<any>) => void,
+  socketMessageHandler: (event: MessageEvent<any>) => void,
 ) => {
   const ws = isBrowser ? new WebSocket(targetUrl) : null
   const socketRef = useRef(ws)
@@ -29,6 +29,7 @@ export const useWebSocket = (
     }
 
     socketRef.current.onmessage = function (event) {
+      console.log('socketRef message')
       socketMessageHandler(event)
     }
 
