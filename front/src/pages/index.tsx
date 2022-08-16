@@ -1,5 +1,5 @@
-// import Xterm from '@/features/xterm'
-import ConsoleDisplay from '@/parts/consoleDisplay'
+import Xterm from '../features/xterm'
+// import ConsoleDisplay from '@/parts/consoleDisplay'
 // import ConsoleDisplay from '@/parts/consoleDisplay'
 import Footer from '@/parts/footer'
 import Header from '@/parts/header'
@@ -12,9 +12,9 @@ const Home: NextPageWithLayout = () => {
     <>
       <Box maxW="960px" mx="auto">
         <Suspense fallback={<Text color="whatsapp.100">Loading...</Text>}>
-          {/* <Xterm /> */}
+          <Xterm />
         </Suspense>
-        <ConsoleDisplay />
+        {/* <ConsoleDisplay /> */}
       </Box>
     </>
   )

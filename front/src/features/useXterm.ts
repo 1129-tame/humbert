@@ -49,10 +49,13 @@ export const useXterm = (
       return xtermRef
     }
     const xterm = initTerminal()
+    // setXtermco(xterm)
     return () => {
       xterm.then((x) => x.current.dispose())
     }
   }, [enteredLogic, targetIdName])
+
+  console.log(xtermRef.current)
 
   return [xtermRef.current?.write]
 }

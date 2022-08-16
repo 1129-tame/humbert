@@ -46,5 +46,5 @@ export const useWebSocket = (
     socketOpenHandler,
   ])
 
-  return []
+  return [socketRef]
 }
