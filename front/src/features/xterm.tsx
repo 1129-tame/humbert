@@ -131,6 +131,8 @@ export default function Xterm() {
     }
   }, [])
 
+  console.log(branch)
+
   return (
     <>
       {!isConnected && (
