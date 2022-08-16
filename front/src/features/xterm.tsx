@@ -65,7 +65,7 @@ export default function Xterm() {
       }
       socketRef.current.close()
     }
-  }, [isBranched])
+  }, [])
 
   // const sendPing = () => {
   //   socketRef.current?.close()
