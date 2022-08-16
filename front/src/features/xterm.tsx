@@ -1,5 +1,4 @@
 import Card from '@/parts/card'
-import { isBrowser } from '@/parts/consoleDisplay'
 import {
   Alert,
   AlertIcon,
@@ -12,6 +11,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Terminal } from 'xterm'
 import 'xterm/css/xterm.css'
 
+export const isBrowser = typeof window !== 'undefined'
 // export const ws = isBrowser
 //   ? new WebSocket('ws://localhost:8080/socket.io')
 //   : null
@@ -65,7 +65,7 @@ export default function Xterm() {
       }
       socketRef.current.close()
     }
-  }, [isBranched])
+  }, [])
 
   // const sendPing = () => {
   //   socketRef.current?.close()

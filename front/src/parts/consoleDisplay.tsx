@@ -1,63 +1,55 @@
-import { useWebSocket } from '@/features/useWebSocket'
-import { useXterm } from '@/features/useXterm'
 import { Box } from '@chakra-ui/layout'
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
+import { Terminal } from 'xterm'
 import 'xterm/css/xterm.css'
 
 export const isBrowser = typeof window !== 'undefined'
-
+// export const ws = isBrowser
+//   ? new WebSocket('ws://localhost:8080/socket.io')
+//   : null
 export default function ConsoleDisplay() {
-  const send = (cmd: string) => {
-    // TODO: send 次の処理を追記
-    socketRef.current?.send(cmd)
-    console.log(cmd)
-  }
-  const [terminalWrite] = useXterm('terminal', send)
+  const xtermRef = useRef<Terminal>(null!)
 
   useEffect(() => {
-    console.log(terminalWrite)
-  }, [terminalWrite])
-
-  const onOpen = () => {
-    console.log('open')
-  }
-
-  const onClose = () => {
-    console.log('close')
-  }
-
-  const onMessage = (event: MessageEvent<any>) => {
-    if (event.data === 'git branch\r\n\r\n') {
+    if (xtermRef == null) {
       return
     }
+    const initTerminal = async () => {
+      const { Terminal } = await import('xterm')
+      const { FitAddon } = await import('xterm-addon-fit')
+      const { WebLinksAddon } = await import('xterm-addon-web-links')
+      const fitAddon = new FitAddon()
+      xtermRef.current = new Terminal({
+        cursorBlink: true,
+      })
+      xtermRef.current.loadAddon(fitAddon)
+      xtermRef.current.loadAddon(new WebLinksAddon())
+      xtermRef.current.open(document.getElementById('terminal') as HTMLElement)
+      fitAddon.fit()
 
-    console.log(event.data)
-    if (!event.data.indexOf('  ')) {
-      console.log('match')
-      console.log(event.data)
-      // const array = event.data.split('\x1B[m\x1B[m\r\n')
-      // console.log(array)
-      // setBranch(array)
+      let cmd = ''
+
+      xtermRef.current.onKey((key) => {
+        const char = key.domEvent.key
+        if (char === 'Enter' && cmd.length > 0) {
+          xtermRef.current.write('\r\n')
+          xtermRef.current.write('$ ')
+          cmd = ''
+        } else if (char === 'Backspace') {
+          xtermRef.current.write('\b \b')
+          cmd = cmd.slice(0, cmd.length - 1)
+        } else {
+          xtermRef.current.write(char)
+          cmd += char
+        }
+      })
+      return xtermRef
     }
-
-    console.log(terminalWrite)
-    if (!terminalWrite) {
-      return
+    const xterm = initTerminal()
+    return () => {
+      xterm.then((x) => x.current.dispose())
     }
-    // if (!isBranched) {
-    //   console.log(event)
-    // }
-    console.log(event.data)
-    terminalWrite(event.data)
-  }
-
-  const [socketRef] = useWebSocket(
-    'ws://localhost:8080/socket.io',
-    'git branch\n',
-    onOpen,
-    onClose,
-    onMessage,
-  )
+  }, [])
 
   return (
     <>
