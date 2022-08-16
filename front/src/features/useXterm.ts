@@ -56,3 +56,12 @@ export const useXterm = (
 
   return [xtermRef.current?.write]
 }
+
+export const Hoge = () => {
+  const send = (cmd: string) => {
+    console.log(cmd)
+  }
+
+  const [terminalWrite] = useXterm('terminal', send)
+  console.log(terminalWrite)
+}

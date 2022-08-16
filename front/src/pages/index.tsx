@@ -1,5 +1,4 @@
 import Xterm from '@/features/xterm'
-// import ConsoleDisplay from '@/parts/consoleDisplay'
 import Footer from '@/parts/footer'
 import Header from '@/parts/header'
 import { Box, Text } from '@chakra-ui/react'
@@ -13,7 +12,6 @@ const Home: NextPageWithLayout = () => {
         <Suspense fallback={<Text color="whatsapp.100">Loading...</Text>}>
           <Xterm />
         </Suspense>
-        {/* <ConsoleDisplay/> */}
       </Box>
     </>
   )
